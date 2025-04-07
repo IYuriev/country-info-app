@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   IBordersInfo,
   ICountryAvailable,
+  IFlagInfo,
   IPopulationCount,
   IPopulationInfo,
 } from 'src/interfaces/country';
@@ -61,5 +62,25 @@ export class CountryService {
       );
     }
     return population;
+  }
+
+  private async getFlagURL(countryCode: string): Promise<string> {
+    const response = await fetch(
+      `${process.env.COUNTRY_SPECIAL_INFO_API_URL}${ENDPOINTS.FLAG}`,
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch flag information: ${response.statusText}`,
+      );
+    }
+
+    const data = (await response.json()) as IFlagInfo;
+    const flagURL = data.data.find((item) => item.iso2 === countryCode)?.flag;
+
+    if (!flagURL) {
+      throw new Error(`Flag URL not found for country code: ${countryCode}`);
+    }
+    return flagURL;
   }
 }
