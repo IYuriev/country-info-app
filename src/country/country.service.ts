@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ICountryAvailable } from 'src/interfaces/country';
+import { IBordersInfo, ICountryAvailable } from 'src/interfaces/country';
 import 'dotenv/config';
 import { ENDPOINTS } from 'src/constants/endpoints/country';
 
@@ -16,5 +16,19 @@ export class CountryService {
 
     const data = (await response.json()) as ICountryAvailable[];
     return data;
+  }
+
+  private async getBorders(countryCode: string): Promise<string[]> {
+    const response = await fetch(
+      `${process.env.COUNTRY_GENERAL_INFO_API_URL}${ENDPOINTS.COUNTRY_INFO}/${countryCode}`,
+    );
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch country information: ${response.statusText}`,
+      );
+    }
+    const data = (await response.json()) as IBordersInfo;
+    const borders = data.borders;
+    return borders;
   }
 }
