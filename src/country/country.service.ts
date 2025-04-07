@@ -88,7 +88,7 @@ export class CountryService {
     }
 
     const data = (await response.json()) as IFlagInfo;
-    const flagURL = data.data.find((item) => item.iso2 === countryCode)?.flag;
+    const flagURL = data.data.find((item) => item.iso3 === countryCode)?.flag;
 
     if (!flagURL) {
       throw new Error(`Flag URL not found for country code: ${countryCode}`);
