@@ -24,6 +24,18 @@ export class CountryService {
     return data;
   }
 
+  async getCountryInfo(countryCode: string) {
+    const borders = await this.getBorders(countryCode);
+    const population = await this.getPopulation(countryCode);
+    const flagURL = await this.getFlagURL(countryCode);
+
+    return {
+      borders,
+      population,
+      flagURL,
+    };
+  }
+
   private async getBorders(countryCode: string): Promise<string[]> {
     const response = await fetch(
       `${process.env.COUNTRY_GENERAL_INFO_API_URL}${ENDPOINTS.COUNTRY_INFO}/${countryCode}`,
