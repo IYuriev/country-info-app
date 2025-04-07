@@ -1,3 +1,4 @@
+import { CreateCalendarDto } from './dto/create-calendar.dto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Holiday } from 'src/interfaces/calendar';
@@ -42,5 +43,20 @@ export class CalendarService {
     });
 
     return 'Holidays saved successfully';
+  }
+
+  async addHolidaysToCalendar(
+    userId: string,
+    createCalendarDto: CreateCalendarDto,
+  ): Promise<void> {
+    const { countryCode, year, holidays } = createCalendarDto;
+
+    const allHolidays: Holiday[] = await this.getHolidays(countryCode, year);
+
+    const filteredHolidays = holidays.length
+      ? allHolidays.filter((holiday) => holidays.includes(holiday.name))
+      : allHolidays;
+
+    await this.saveHolidays(userId, filteredHolidays);
   }
 }
