@@ -22,4 +22,25 @@ export class CalendarService {
     const data = (await response.json()) as Holiday[];
     return data;
   }
+
+  private async saveHolidays(
+    userId: string,
+    holidays: Holiday[],
+  ): Promise<string> {
+    const parsedUserId = +userId;
+    if (isNaN(parsedUserId)) {
+      throw new Error('Invalid user ID');
+    }
+
+    await this.prisma.event.createMany({
+      data: holidays.map((holiday: Holiday) => ({
+        userId: parsedUserId,
+        name: holiday.name,
+        date: new Date(holiday.date),
+        countryCode: holiday.countryCode,
+      })),
+    });
+
+    return 'Holidays saved successfully';
+  }
 }
