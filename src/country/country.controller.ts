@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { CountryService } from './country.service';
 import { ICountryAvailable } from 'src/interfaces/country';
 
@@ -9,5 +9,10 @@ export class CountryController {
   @Get('/available')
   async getAvailableCountries(): Promise<ICountryAvailable[]> {
     return await this.countryService.getAvailableCountries();
+  }
+
+  @Get('/info/:countryCode')
+  async getCountryInfo(@Param('countryCode') countryCode: string) {
+    return await this.countryService.getCountryInfo(countryCode);
   }
 }
